@@ -1,54 +1,52 @@
-# JSON to HTML Webpack Plugin
+# JSONToJSONWebpackPlugin
+
+A webpack plugin to transform JSON files into a single JSON file.
+
+## Installation
+
+```bash
+npm install json-to-json-webpack-plugin
+```
 
 ## Usage
 
-```js
-const JSONToHTMLPlugin = require("json-to-html-webpack-plugin");
+In your webpack configuration file:
+
+```javascript
+const JSONToJSONWebpackPlugin = require("json-to-json-webpack-plugin");
 
 module.exports = {
+  // other Webpack options...
   plugins: [
-    new JSONToHTMLPlugin({
-      template: "./src/template.html",
-      target: "path/to/put/files/in/dist",
-      jsonFiles: ["path/to/one.json", "path/to/another.json"],
-      transformer: (allJsonData) => ({
-        ...allJsonData.one,
-        whatEverYouWant: allJsonData.another.specificData,
-        otherData: allJsonData.another,
-      }),
+    new JSONToJSONWebpackPlugin({
+      pages: [
+        {
+          jsonFiles: ["./path/to/file1.json", "./path/to/file2.json"],
+          outputFile: "./output/file.json",
+          transformer: (data) => {
+            // optional transformation function
+            return {
+              ...data.file1,
+              example: data.file2,
+            };
+          },
+        },
+        // optional more pages...
+      ],
     }),
+    // other Webpack plugins...
   ],
+  // other Webpack options...
 };
 ```
 
 ## Options
 
-### `template`
-
-Type: `string`
-
-Path to the template file.
-
-### `target`
-
-Type: `string`
-
-Path to put the generated files in.
-
-### `jsonFiles`
-
-Type: `string[]`
-
-Paths to the JSON files to use.
-
-Each file will be parsed as JSON and the data will be available in the transformer under the same name as the file.
-
-### `transformer`
-
-Type: `function`
-
-Function to transform the JSON data into the data to be used in the template.
+- `pages` _(required)_ An array of objects, each with the following properties:
+  - `jsonFiles`: _(required)_ An array of strings, each representing a path to a JSON file.
+  - `outputFile`: _(required)_ A string representing the path to the output file.
+  - `transformer` _(optional)_: A function that takes the raw JSON data as input and returns the transformed data.
 
 ## License
 
-MIT (http://www.opensource.org/licenses/mit-license.php)
+MIT.
